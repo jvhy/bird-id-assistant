@@ -14,7 +14,11 @@ authors = [
 classifiers = [
     "Programming Language :: Python :: 3.13"
 ]
-dependencies = []
+dependencies = [
+    "beautifulsoup4",
+    "requests",
+    "tqdm",
+]
 
 [project.optional-dependencies]
 test = [
