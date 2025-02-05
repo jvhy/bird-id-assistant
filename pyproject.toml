@@ -22,3 +22,6 @@ test = [
     "coverage",
     "flake8"
 ]
+
+[project.scripts]
+bia = "bird_id_assistant.cli:main"
