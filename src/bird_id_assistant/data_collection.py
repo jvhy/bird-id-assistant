@@ -8,6 +8,7 @@ from bs4 import BeautifulSoup
 import requests
 from tqdm import tqdm
 
+from bird_id_assistant.data_cleaning import extract_main_content, clean
 from bird_id_assistant.util import dir_path
 
 
@@ -30,6 +31,7 @@ def download_content(url, timeout):
 def parse_args(argv=None):
     parser = argparse.ArgumentParser()
     parser.add_argument("output_dir", metavar="output-dir", type=dir_path, help="Path to output directory where HTML pages are written")
+    parser.add_argument("--output-format", type=str, choices=["html", "txt"], default="txt", help="Output file format: html (raw) or txt (cleaned plain text)")
     parser.add_argument("--num-threads", type=int, default=8, help="Number of threads used for making requests")
     args = parser.parse_args()
     return args
@@ -37,6 +39,8 @@ def parse_args(argv=None):
 
 def main(argv=None):
     args = parse_args(argv)
+
+    clean_output = (args.output_format == "txt")
 
     response = requests.get(BIRD_LIST_URL)
     html = response.content
@@ -70,11 +74,16 @@ def main(argv=None):
                 progress_bar.update(1)
 
     for result in tqdm(results):
-        if result:
-            filename = uuid.uuid4().hex + ".html"  # creates a unique filename
-            out_path = os.path.join(args.output_dir, filename)
-            with open(out_path, "w") as f_out:
-                f_out.write(result.decode())
+        if not result:
+            continue
+        if clean_output:
+            content = extract_main_content(result)
+            cleaned_content = clean(content)
+            result = cleaned_content
+        filename = uuid.uuid4().hex + "." + args.output_format  # creates a unique filename
+        out_path = os.path.join(args.output_dir, filename)
+        with open(out_path, "w") as f_out:
+            f_out.write(result.decode())
 
 
 if __name__ == "__main__":
