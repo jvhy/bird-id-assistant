@@ -2,6 +2,7 @@ import argparse
 import os
 
 import chromadb
+from chromadb import QueryResult
 from tqdm import tqdm
 
 from bird_id_assistant.util import dir_path
@@ -19,7 +20,7 @@ def create_vector_db(input_doc_dir: str, host="localhost", port=8000, collection
             ids=[fn.split(".")[0]]
         )
 
-def query_vector_db(query: str, n_results: int, host="localhost", port=8000, collection_name="bia_data"):
+def query_vector_db(query: str, n_results: int, host="localhost", port=8000, collection_name="bia_data") -> list[QueryResult]:
     client = chromadb.HttpClient(host=host, port=port)
     collection = client.get_or_create_collection(collection_name)
     results = collection.query(
@@ -27,6 +28,10 @@ def query_vector_db(query: str, n_results: int, host="localhost", port=8000, col
         n_results=n_results
     )
     return results
+
+
+def get_documents(results: list[QueryResult]):
+    return results["documents"][0]
 
 
 def parse_args(argv=None):
