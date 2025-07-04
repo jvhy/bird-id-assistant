@@ -57,8 +57,18 @@ def clean(html):
 
 def parse_args(argv=None):
     parser = argparse.ArgumentParser()
-    parser.add_argument("input_dir", metavar="input-dir", type=dir_path, help="Directory containing html files to be cleaned. Files should have .html-extension.")
-    parser.add_argument("output_dir", metavar="output-dir", type=dir_path, help="Directory where cleaned .txt files are written")
+    parser.add_argument(
+        "input_dir",
+        metavar="input-dir",
+        type=dir_path,
+        help="Directory containing html files to be cleaned. Files should have .html-extension."
+    )
+    parser.add_argument(
+        "output_dir",
+        metavar="output-dir",
+        type=dir_path,
+        help="Directory where cleaned .txt files are written"
+    )
     args = parser.parse_args()
     return args
 

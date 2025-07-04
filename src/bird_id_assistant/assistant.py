@@ -28,7 +28,8 @@ async def reply_to_user(message_history: list[dict]) -> str:
         "type": "function",
         "function": {
             "name": "query_vector_db",
-            "description": "Queries a vector database of bird species Wiki documents and returns the closest matching one(s). This function should be called very conservatively.",
+            "description": "Queries a vector database of bird species Wiki documents and returns "
+            "the closest matching one(s). This function should be called very conservatively.",
             "parameters": {
                 "type": "object",
                 "required": ["query"],
@@ -61,7 +62,9 @@ async def reply_to_user(message_history: list[dict]) -> str:
                     print("Let me check the database...")
                     tool.function.arguments["n_results"] = int(tool.function.arguments["n_results"])
                     result = get_documents(query_vector_db(**tool.function.arguments))
-                    message_history.extend([response.message, {"role": "tool", "name": tool.function.name, "content": str(result)}])
+                    message_history.extend(
+                        [response.message, {"role": "tool", "name": tool.function.name, "content": str(result)}]
+                    )
                 case "continue_conversation":
                     pass
                 case _:

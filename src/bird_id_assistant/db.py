@@ -20,7 +20,14 @@ def create_vector_db(input_doc_dir: str, host="localhost", port=8000, collection
             ids=[fn.split(".")[0]]
         )
 
-def query_vector_db(query: str, n_results: int, host="localhost", port=8000, collection_name="bia_data") -> list[QueryResult]:
+
+def query_vector_db(
+        query: str,
+        n_results: int,
+        host="localhost",
+        port=8000,
+        collection_name="bia_data"
+) -> list[QueryResult]:
     client = chromadb.HttpClient(host=host, port=port)
     collection = client.get_or_create_collection(collection_name)
     results = collection.query(
@@ -41,11 +48,20 @@ def parse_args(argv=None):
     subparsers = parser.add_subparsers(dest="cmd")
 
     parser_create = subparsers.add_parser("create", help="Create vector database from text files in input dir")
-    parser_create.add_argument("input_doc_dir", type=dir_path, help="Directory containing text documents to store in vector database")
+    parser_create.add_argument(
+        "input_doc_dir",
+        type=dir_path,
+        help="Directory containing text documents to store in vector database"
+    )
 
     parser_query = subparsers.add_parser("query", help="Query documents from vector database")
     parser_query.add_argument("query", type=str, help="Query string")
-    parser_query.add_argument("-n", "--n_results", type=int, default=1, help="Number of closest matching documents to retrieve")
+    parser_query.add_argument(
+        "-n", "--n_results",
+        type=int,
+        default=1,
+        help="Number of closest matching documents to retrieve"
+    )
 
     args = parser.parse_args()
     return args

@@ -30,8 +30,19 @@ def download_content(url, timeout):
 
 def parse_args(argv=None):
     parser = argparse.ArgumentParser()
-    parser.add_argument("output_dir", metavar="output-dir", type=dir_path, help="Path to output directory where HTML pages are written")
-    parser.add_argument("--output-format", type=str, choices=["html", "txt"], default="txt", help="Output file format: html (raw) or txt (cleaned plain text)")
+    parser.add_argument(
+        "output_dir",
+        metavar="output-dir",
+        type=dir_path,
+        help="Path to output directory where HTML pages are written"
+    )
+    parser.add_argument(
+        "--output-format",
+        type=str,
+        choices=["html", "txt"],
+        default="txt",
+        help="Output file format: html (raw) or txt (cleaned plain text)"
+    )
     parser.add_argument("--num-threads", type=int, default=8, help="Number of threads used for making requests")
     args = parser.parse_args()
     return args
@@ -55,6 +66,7 @@ def main(argv=None):
     #   </ul>
     # </div>
 
+    # flake8: noqa E131
     species_urls = [
         BASE_URL + a["href"]
             for div in soup.body.find_all("div", class_="div-col")
