@@ -1,4 +1,4 @@
-import argparse
+from enum import Enum
 import concurrent.futures
 import logging
 import os
@@ -19,6 +19,11 @@ BASE_URL = "https://en.wikipedia.org"
 BIRD_LIST_URL = BASE_URL + "/wiki/List_of_birds_by_common_name"
 
 
+class OutputFormat(str, Enum):
+    TXT = "txt"
+    HTML = "html"
+
+
 def download_content(url, timeout):
     try:
         response = requests.get(url, timeout=timeout)
@@ -28,34 +33,19 @@ def download_content(url, timeout):
     return response.content
 
 
-def parse_args(argv=None):
-    parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "output_dir",
-        metavar="output-dir",
-        type=dir_path,
-        help="Path to output directory where HTML pages are written"
-    )
-    parser.add_argument(
-        "--output-format",
-        type=str,
-        choices=["html", "txt"],
-        default="txt",
-        help="Output file format: html (raw) or txt (cleaned plain text)"
-    )
-    parser.add_argument("--num-threads", type=int, default=8, help="Number of threads used for making requests")
-    args = parser.parse_args()
-    return args
+def collect_data(output_dir: str | os.PathLike, output_format: OutputFormat = "txt", num_threads: int = 8) -> None:
+    """
+    Collects Wikipedia articles of bird species, (optionally) cleans the HTML into plain text and writes the article contents to files.
 
-
-def main(argv=None):
-    args = parse_args(argv)
-
-    clean_output = (args.output_format == "txt")
+    Args:
+        output_dir:     Path to a directory where downloaded article files are saved.
+        output_format:  Format of the article files (txt or html). If set to txt, downloaded HTML files are cleaned.
+    """
+    clean_output = (output_format == "txt")
 
     response = requests.get(BIRD_LIST_URL)
     html = response.content
-    soup = BeautifulSoup(html)
+    soup = BeautifulSoup(html, features="html.parser")
 
     # Species list elements are structured as follows:
     # <div class="div-col">
@@ -78,7 +68,7 @@ def main(argv=None):
     # Make requests in parallel in n threads
     results = []
     with tqdm(total=len(species_urls)) as progress_bar:
-        with concurrent.futures.ThreadPoolExecutor(max_workers=args.num_threads) as executor:
+        with concurrent.futures.ThreadPoolExecutor(max_workers=num_threads) as executor:
             future_to_url = (executor.submit(download_content, url, 10) for url in species_urls)
             for future in concurrent.futures.as_completed(future_to_url):
                 data = future.result()
@@ -92,11 +82,7 @@ def main(argv=None):
             content = extract_main_content(result)
             cleaned_content = clean(content)
             result = cleaned_content
-        filename = uuid.uuid4().hex + "." + args.output_format  # creates a unique filename
-        out_path = os.path.join(args.output_dir, filename)
+        filename = uuid.uuid4().hex + "." + output_format  # creates a unique filename
+        out_path = os.path.join(output_dir, filename)
         with open(out_path, "w") as f_out:
-            f_out.write(result.decode())
-
-
-if __name__ == "__main__":
-    main()
+            f_out.write(result)
