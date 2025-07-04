@@ -81,7 +81,7 @@ async def reply_to_user(message_history: list[dict]) -> str:
     return response.message.content
 
 
-async def main():
+async def chat():
     chat_history = []
     while True:
         question = input("> ")
@@ -92,4 +92,4 @@ async def main():
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    asyncio.run(chat())
