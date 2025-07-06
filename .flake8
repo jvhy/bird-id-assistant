@@ -1,3 +1,5 @@
 [flake8]
 filename = *.py
 max-line-length = 120
+per-file-ignores =
+    src/bird_id_assistant/data_collection.py: E131

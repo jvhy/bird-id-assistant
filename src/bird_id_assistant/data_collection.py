@@ -9,7 +9,6 @@ import requests
 from tqdm import tqdm
 
 from bird_id_assistant.data_cleaning import extract_main_content, clean
-from bird_id_assistant.util import dir_path
 
 
 logger = logging.getLogger(__name__)
@@ -35,7 +34,8 @@ def download_content(url, timeout):
 
 def collect_data(output_dir: str | os.PathLike, output_format: OutputFormat = "txt", num_threads: int = 8) -> None:
     """
-    Collects Wikipedia articles of bird species, (optionally) cleans the HTML into plain text and writes the article contents to files.
+    Collects Wikipedia articles of bird species, (optionally) cleans the HTML into plain text
+    and writes the article contents to files.
 
     Args:
         output_dir:     Path to a directory where downloaded article files are saved.
@@ -56,7 +56,6 @@ def collect_data(output_dir: str | os.PathLike, output_format: OutputFormat = "t
     #   </ul>
     # </div>
 
-    # flake8: noqa E131
     species_urls = [
         BASE_URL + a["href"]
             for div in soup.body.find_all("div", class_="div-col")
