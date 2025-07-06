@@ -14,6 +14,15 @@ Some personal learning goals include:
 3. Familiarizing myself with different frameworks for RAG and learning how LLMs retrieve documents from an embedding space
 4. Learning more about birds! :-)
 
+## Future improvements
+
+- **Chunking**: Articles could be chunked to smaller parts before creating the embeddings to potentially improve RAG performance.
+- **Metadata**: Metadata could be extracted from the articles (with an LLM?) and inserted to the database alongside the embedding vectors. This would, for example:
+  - allow the model to reliably query for specific bird species
+  - allow filtering species by size, color, region, environment etc.
+- **Embedding comparison**: Choosing another embedding model could improve RAG performance (see [Chroma docs](https://docs.trychroma.com/docs/embeddings/embedding-functions)).
+- **Model comparison**: Models that support function calling could be compared against each other. Models are available in the [Ollama library](https://ollama.com/library).
+- **System prompt tuning**: Changing LLM system prompt can improve the fluency of conversation and make the assistant more task-oriented.
 
 ## Instructions
 
