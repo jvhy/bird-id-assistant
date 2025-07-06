@@ -1,8 +1,12 @@
 import asyncio
+import logging
 
 from ollama import AsyncClient
 
 from bird_id_assistant.db import query_vector_db, get_documents
+
+
+logger = logging.getLogger(__name__)
 
 
 def continue_conversation(*args, **kwargs):
@@ -60,6 +64,7 @@ async def reply_to_user(message_history: list[dict]) -> str:
             match tool.function.name:
                 case "query_vector_db":
                     print("Let me check the database...")
+                    logging.debug("Assistant is querying vector db with args %r", tool.function.arguments)
                     tool.function.arguments["n_results"] = int(tool.function.arguments["n_results"])
                     result = get_documents(query_vector_db(**tool.function.arguments))
                     message_history.extend(

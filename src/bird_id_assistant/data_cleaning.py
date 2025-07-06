@@ -11,7 +11,6 @@ from bird_id_assistant.util import dir_path
 
 
 logger = logging.getLogger(__name__)
-logging.basicConfig(filename='logs/data_cleaning.log', encoding='utf-8', level=logging.DEBUG)
 
 
 def extract_main_content(html):
@@ -19,6 +18,7 @@ def extract_main_content(html):
     main_content = soup.find("div", class_="mw-content-ltr")
 
     if main_content is None:
+        logger.warning("Failed to extract main content from HTML")
         return main_content
 
     # Remove invisible short description (always "Species of bird")

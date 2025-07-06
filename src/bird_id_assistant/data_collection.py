@@ -12,7 +12,7 @@ from bird_id_assistant.data_cleaning import extract_main_content, clean
 
 
 logger = logging.getLogger(__name__)
-logging.basicConfig(filename='logs/data_collection.log', encoding='utf-8', level=logging.DEBUG)
+
 
 BASE_URL = "https://en.wikipedia.org"
 BIRD_LIST_URL = BASE_URL + "/wiki/List_of_birds_by_common_name"
@@ -65,6 +65,7 @@ def collect_data(output_dir: str | os.PathLike, output_format: OutputFormat = "t
     ]
 
     # Make requests in parallel in n threads
+    logger.info("Starting download of %s articles", len(species_urls))
     results = []
     with tqdm(total=len(species_urls)) as progress_bar:
         with concurrent.futures.ThreadPoolExecutor(max_workers=num_threads) as executor:
@@ -74,6 +75,7 @@ def collect_data(output_dir: str | os.PathLike, output_format: OutputFormat = "t
                 results.append(data)
                 progress_bar.update(1)
 
+    logger.info("Saving downloaded articles to directory: %s", output_dir)
     for result in tqdm(results):
         if not result:
             continue
