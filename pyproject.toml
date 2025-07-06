@@ -15,12 +15,12 @@ classifiers = [
     "Programming Language :: Python :: 3.13"
 ]
 dependencies = [
-    "beautifulsoup4",
-    "chromadb",
-    "html2text",
-    "ollama",
-    "requests",
-    "tqdm",
+    "beautifulsoup4==4.13.3",
+    "chromadb==0.6.3",
+    "html2text==2024.2.26",
+    "ollama==0.4.7",
+    "requests==2.32.3",
+    "tqdm==4.67.1",
 ]
 
 [project.optional-dependencies]
