@@ -18,6 +18,9 @@ def extract_main_content(html):
     soup = BeautifulSoup(html, "html.parser")
     main_content = soup.find("div", class_="mw-content-ltr")
 
+    if main_content is None:
+        return main_content
+
     # Remove invisible short description (always "Species of bird")
     short_desc_div = main_content.find("div", class_="shortdescription")
     if short_desc_div:
@@ -80,6 +83,8 @@ def main(argv=None):
         with open(in_path, "r") as f_in:
             html = f_in.read()
         content = extract_main_content(html)
+        if content is None:
+            continue
         cleaned_content = clean(content)
         out_fn = in_path.rsplit("/")[-1].rsplit(".")[0] + ".txt"
         out_path = os.path.join(args.output, out_fn)
